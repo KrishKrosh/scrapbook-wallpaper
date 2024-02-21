@@ -8,6 +8,8 @@ input_folder = '/Users/krishshah/Pictures/Wallpapers/Scrapbook'  # Replace with 
 output_folder = '/Users/krishshah/Pictures/Wallpapers/Current/'
 output_name = 'scrapbook.jpg'
 
+target_width = 400
+
 def get_datetime_string():
     now = datetime.now()
     return now.strftime("%Y%m%d_%H%M%S")
@@ -19,8 +21,12 @@ def load_images_from_folder(folder, base_image_path):
     return image_paths
 
 def resize_and_add_border(image, scale_factor, border_size=5):
+    # first we resize each image to be same width
+    aspect_ratio = image.width / image.height
+    new_height = int(target_width / aspect_ratio)
+
     # Resize image according to the scale factor
-    new_size = (int(image.width * scale_factor), int(image.height * scale_factor))
+    new_size = (int(target_width * scale_factor), int(new_height * scale_factor))
     resized_image = image.resize(new_size, Image.ANTIALIAS)
     
     # Add a black border
@@ -71,7 +77,7 @@ def create_wallpaper_with_base(base_image_path, input_folder, output_path, wallp
     occupied_areas = []
 
     for img in images:
-        scale_factor = random.uniform(0.5, 1.2)  # Adjust scaling factor as needed
+        scale_factor = random.uniform(0.5, 1.5)  # Adjust scaling factor as needed
         img = resize_and_add_border(img, scale_factor, border_size)
 
         position = find_placement_for_image(img, occupied_areas, wallpaper_size)
