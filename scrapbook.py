@@ -27,7 +27,7 @@ def resize_and_add_border(image, scale_factor, border_size=5):
 
     # Resize image according to the scale factor
     new_size = (int(target_width * scale_factor), int(new_height * scale_factor))
-    resized_image = image.resize(new_size, Image.ANTIALIAS)
+    resized_image = image.resize(new_size, Image.Resampling.LANCZOS)
     
     # Add a black border
     bordered_image = ImageOps.expand(resized_image, border=border_size, fill='black')
