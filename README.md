@@ -4,6 +4,8 @@ This is a script that takes a folder of images and a base image, and turns it in
 
 ![Example Scrapbook](_images/scrapbook.jpg)
 
+_The script ensures your most recent screenshot is at the front!_
+
 ## How to use
 
 1. Clone the repository

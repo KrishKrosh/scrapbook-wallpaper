@@ -3,22 +3,36 @@ import random
 from PIL import Image, ImageOps
 from datetime import datetime
 
-base_image_path = '/Users/krishshah/Pictures/Wallpapers/base.jpg'  # Update this path
-input_folder = '/Users/krishshah/Pictures/Wallpapers/Scrapbook'  # Replace with your folder path
-output_folder = '/Users/krishshah/Pictures/Wallpapers/Current/'
-output_name = 'scrapbook.jpg'
+base_image_path = "/Users/krishshah/Pictures/Wallpapers/base.jpg"  # Update this path
+input_folder = (
+    "/Users/krishshah/Pictures/Wallpapers/Scrapbook"  # Replace with your folder path
+)
+output_folder = "/Users/krishshah/Pictures/Wallpapers/Current/"
+output_name = "scrapbook.jpg"
+
+supported_formats = [".jpg", ".jpeg", ".png", ".bmp", ".gif"]
 
 target_width = 400
+
 
 def get_datetime_string():
     now = datetime.now()
     return now.strftime("%Y%m%d_%H%M%S")
 
+
 def load_images_from_folder(folder, base_image_path):
-    supported_formats = ['.jpg', '.jpeg', '.png', '.bmp', '.gif']
-    files = [os.path.join(folder, f) for f in os.listdir(folder) if os.path.isfile(os.path.join(folder, f))]
-    image_paths = [f for f in files if os.path.splitext(f)[1].lower() in supported_formats and f != base_image_path]
+    files = [
+        os.path.join(folder, f)
+        for f in os.listdir(folder)
+        if os.path.isfile(os.path.join(folder, f))
+    ]
+    image_paths = [
+        f
+        for f in files
+        if os.path.splitext(f)[1].lower() in supported_formats and f != base_image_path
+    ]
     return image_paths
+
 
 def resize_and_add_border(image, scale_factor, border_size=5):
     # first we resize each image to be same width
@@ -28,11 +42,12 @@ def resize_and_add_border(image, scale_factor, border_size=5):
     # Resize image according to the scale factor
     new_size = (int(target_width * scale_factor), int(new_height * scale_factor))
     resized_image = image.resize(new_size, Image.Resampling.LANCZOS)
-    
+
     # Add a black border
-    bordered_image = ImageOps.expand(resized_image, border=border_size, fill='black')
-    
+    bordered_image = ImageOps.expand(resized_image, border=border_size, fill="black")
+
     return bordered_image
+
 
 def calculate_overlap(new_img_area, occupied_areas):
     new_x, new_y, new_w, new_h = new_img_area
@@ -45,9 +60,10 @@ def calculate_overlap(new_img_area, occupied_areas):
             overlap_area += overlap_width * overlap_height
     return overlap_area
 
+
 def find_placement_for_image(img, occupied_areas, wallpaper_size):
     best_position = None
-    min_overlap = float('inf')
+    min_overlap = float("inf")
     for attempt in range(100):  # Attempt placement 100 times to find a good position
         # Ensure x and y ranges are valid
         max_x = max(wallpaper_size[0] - img.width, 1)
@@ -68,9 +84,22 @@ def find_placement_for_image(img, occupied_areas, wallpaper_size):
 
     return best_position
 
-def create_wallpaper_with_base(base_image_path, input_folder, output_path, wallpaper_size=(1920, 1080), border_size=5):
+
+def create_wallpaper_with_base(
+    base_image_path,
+    input_folder,
+    output_path,
+    wallpaper_size=(1920, 1080),
+    border_size=5,
+):
     base_image = Image.open(base_image_path).resize(wallpaper_size)
     image_paths = load_images_from_folder(input_folder, base_image_path)
+
+    # ensures the newest image won't be behind others
+    image_paths.sort(key=os.path.getmtime)
+    # randomize all images except for last
+    random.shuffle(image_paths[:-1])
+
     images = [Image.open(path) for path in image_paths]
 
     wallpaper = base_image.copy()
@@ -83,7 +112,9 @@ def create_wallpaper_with_base(base_image_path, input_folder, output_path, wallp
         position = find_placement_for_image(img, occupied_areas, wallpaper_size)
         if position:
             x, y = position
-            wallpaper.paste(img, (x, y), img.convert('RGBA') if img.mode == 'RGBA' else None)
+            wallpaper.paste(
+                img, (x, y), img.convert("RGBA") if img.mode == "RGBA" else None
+            )
             occupied_areas.append((x, y, img.width, img.height))
 
     wallpaper.save(output_path)
@@ -96,4 +127,6 @@ for file in os.listdir(output_folder):
     if output_name in file:
         os.remove(output_folder + file)
 
-create_wallpaper_with_base(base_image_path, input_folder, output_path + get_datetime_string() + '.jpg')
+create_wallpaper_with_base(
+    base_image_path, input_folder, output_path + get_datetime_string() + ".jpg"
+)
