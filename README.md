@@ -29,6 +29,10 @@ I also use MacOS automator to watch over my scrapbook folder and run my script w
 
 Lastly, I have my desktop wallpaper set to cycle through the `output_image_path` every 5 seconds. This way, my wallpaper is always up to date with my latest screenshots.
 
+> [!IMPORTANT]  
+> You need to have two images in the folder so apple lets you rotate through the folder, then you can delete
+![Tutorial conversion](https://github.com/user-attachments/assets/7daf8951-fe63-4391-a982-1eac541505f6)
+
 ### Windows and Linux
 
 TBD
