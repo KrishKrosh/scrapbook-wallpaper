@@ -2,9 +2,12 @@
 
 This is a script that takes a folder of images and a base image, and turns it into a scrapbook wallpaper. It's a fun way to display your favorite images on your desktop.
 
-![Example Scrapbook](_images/scrapbook.jpg)
+https://github.com/user-attachments/assets/a5c1f0c3-f2d6-4f1c-9c1b-069b23513d36
 
-_The script ensures your most recent screenshot is at the front!_
+**Features**
+- Makes sure most recent screenshot is at the front
+- Customizable background (base wallpaper)
+- Automated wallpaper updating
 
 ## How to use
 
